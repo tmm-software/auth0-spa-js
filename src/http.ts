@@ -74,6 +74,7 @@ export const switchFetch = async (
   timeout = DEFAULT_FETCH_TIMEOUT_MS
 ): Promise<any> => {
   if (worker) {
+    console.log('using worker');
     return fetchWithWorker(
       fetchUrl,
       audience,
@@ -83,7 +84,15 @@ export const switchFetch = async (
       worker
     );
   } else {
-    return fetchWithoutWorker(fetchUrl, fetchOptions, timeout);
+    console.log('not using worker');
+    return fetchWithoutWorker(
+      fetchUrl,
+      {
+        ...fetchOptions,
+        body: JSON.stringify({ ...JSON.parse(fetchOptions.body), scope })
+      },
+      timeout
+    );
   }
 };
 

@@ -22,6 +22,7 @@ export async function oauthToken(
   }: TokenEndpointOptions,
   worker?: Worker
 ) {
+  console.log({ scope });
   const result = await getJSON<TokenEndpointResponse>(
     `${baseUrl}/oauth/token`,
     timeout,

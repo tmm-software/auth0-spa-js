@@ -936,6 +936,7 @@ export default class Auth0Client {
         : null;
 
     try {
+      console.log({ scope });
       tokenResult = await oauthToken(
         {
           ...this.customOptions,
