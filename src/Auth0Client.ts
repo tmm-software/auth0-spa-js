@@ -57,6 +57,7 @@ import {
   PopupLoginOptions,
   PopupConfigOptions,
   GetUserOptions,
+  GetGrantedScopeOptions,
   GetIdTokenClaimsOptions,
   RedirectLoginResult,
   GetTokenSilentlyOptions,
@@ -507,6 +508,7 @@ export default class Auth0Client {
       ...authResult,
       decodedToken,
       scope: params.scope,
+      granted_scope: authResult.scope,
       audience: params.audience || 'default',
       client_id: this.options.client_id
     };
@@ -666,6 +668,7 @@ export default class Auth0Client {
       decodedToken,
       audience: transaction.audience,
       scope: transaction.scope,
+      granted_scope: authResult.scope,
       client_id: this.options.client_id
     };
 
@@ -766,6 +769,21 @@ export default class Auth0Client {
         }),
       `${this.options.client_id}::${getTokenOptions.audience}::${getTokenOptions.scope}`
     );
+  }
+
+  public async getGrantedScope(options: GetGrantedScopeOptions = {}) {
+    const audience = options.audience || this.options.audience || 'default';
+    const scope = getUniqueScopes(this.defaultScope, this.scope, options.scope);
+
+    const cache = await this.cacheManager.get(
+      new CacheKey({
+        client_id: this.options.client_id,
+        audience,
+        scope
+      })
+    );
+
+    return cache ? cache.granted_scope || cache.scope : null;
   }
 
   private async _getTokenSilently(options: GetTokenSilentlyOptions = {}) {
@@ -1050,6 +1068,7 @@ export default class Auth0Client {
 
       return {
         ...tokenResult,
+        granted_scope: tokenResult.scope,
         decodedToken,
         scope: params.scope,
         audience: params.audience || 'default'
@@ -1141,6 +1160,7 @@ export default class Auth0Client {
 
     return {
       ...tokenResult,
+      granted_scope: tokenResult.scope,
       decodedToken,
       scope: options.scope,
       audience: options.audience || 'default'

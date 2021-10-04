@@ -308,6 +308,17 @@ export interface GetIdTokenClaimsOptions {
   audience?: string;
 }
 
+export interface GetGrantedScopeOptions {
+  /**
+   * The scope that was used in the authentication request
+   */
+  scope?: string;
+  /**
+   * The audience that was used in the authentication request
+   */
+  audience?: string;
+}
+
 /*
  * TODO: Remove this on the next major
  */
